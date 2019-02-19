@@ -72,7 +72,11 @@ router.post('/sign-up', (req, res, next) => {
   }
 
   users[userId] = req.body
-  DataUtil.writeUsers(users)
+  try {
+    DataUtil.writeUsers(users)
+  } catch (exception) {
+    return next(createError(500, 'CANNOT WRITE TO users.json FILE ' + exception))
+  }
 
   setSignedInCookie(res, userId)
   res.redirect('/')
