@@ -1,0 +1,26 @@
+{
+  "name": "001-express-chat",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./src/server.js",
+    "watch": "nodemon --watch src npm start"
+  },
+  "dependencies": {
+    "cookie": "^0.3.1",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "ejs": "~2.5.7",
+    "express": "~4.16.0",
+    "http-errors": "~1.6.2",
+    "lodash": "^4.17.11",
+    "morgan": "~1.9.0",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.9"
+  },
+  "engines": {
+    "node": "10.x"
+  }
+}
