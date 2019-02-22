@@ -18,7 +18,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 app.use(require('./middleware/signed-in-as.js'))
 
-app.use((req, res, next) => {
+app.use(function(req, res, next) {
   // make `req` available to EJS
   res.locals.req = req
   next()

@@ -1,6 +1,6 @@
 const DataUtil = require('../utils/DataUtil')
 
-module.exports = (req, res, next) => {
+module.exports = function(req, res, next) {
   const userId = req.cookies.userId
 
   const users = DataUtil.readUsers()
