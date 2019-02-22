@@ -9,10 +9,10 @@ router.get('/sign-in', function(req, res, next) {
   res.render('sign-in')
 })
 
-router.post('/sign-in', (req, res, next) => {
-  var userId = req.body.userId
-  if (!userId) {
-    return next(createError(400, 'missing userId'))
+router.post('/sign-in', function(req, res, next) {
+  var handle = req.body.handle
+  if (!handle) {
+    return next(createError(400, 'missing handle'))
   }
   var password = req.body.password
   if (!password) {
@@ -20,20 +20,20 @@ router.post('/sign-in', (req, res, next) => {
   }
 
   var users = DataUtil.readUsers()
-  var user = users[userId]
+  var user = users[handle]
   if (!user) {
-    return next(createError(401, `no user with handle ${userId}`))
+    return next(createError(401, `no user with handle ${handle}`))
   }
   if (user.password !== password) {
     return next(createError(401, 'incorrect password'))
   }
 
-  setSignedInCookie(res, userId)
+  setSignedInCookie(res, handle)
   res.redirect('/')
 })
 
-function setSignedInCookie(res, userId) {
-  res.setHeader('Set-Cookie', cookie.serialize('userId', userId, {
+function setSignedInCookie(res, handle) {
+  res.setHeader('Set-Cookie', cookie.serialize('handle', handle, {
     httpOnly: true,
     maxAge: 60 * 60 * 24 * 7, // expire in 1 week
     sameSite: 'strict',
@@ -41,8 +41,8 @@ function setSignedInCookie(res, userId) {
   }))
 }
 
-router.get('/sign-out', (req, res, next) => {
-  res.setHeader('Set-Cookie', cookie.serialize('userId', ' ', {
+router.get('/sign-out', function(req, res, next) {
+  res.setHeader('Set-Cookie', cookie.serialize('handle', ' ', {
     httpOnly: true,
     maxAge: 0, // expire immediately
     path: '/',

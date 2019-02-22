@@ -6,10 +6,10 @@ var router = express.Router()
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   var users = DataUtil.readUsers()
-  var userIds = Object.keys(users)
+  var handles = Object.keys(users)
   res.render('users', {
     users: users,
-    userIds: userIds,
+    handles: handles,
   })
 })
 
