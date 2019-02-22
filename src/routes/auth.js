@@ -1,6 +1,7 @@
 var createError = require('http-errors')
 var express = require('express')
 var DataUtil = require('../utils/DataUtil')
+var AuthUtil = require('../utils/AuthUtil')
 var cookie = require('cookie')
 
 var router = express.Router()
@@ -51,35 +52,30 @@ router.get('/sign-out', function(req, res, next) {
   res.redirect('/')
 })
 
-router.get('/sign-up', (req, res, next) => {
+router.get('/sign-up', function(req, res, next) {
   res.render('sign-up')
 })
 
-router.post('/sign-up', (req, res, next) => {
-  var userId = req.body.userId
-  if (!userId) {
-    return next(createError(400, 'missing userId'))
+router.post('/sign-up', async function(req, res, next) {
+  var handle = req.body.handle
+  if (!handle) {
+    return next(createError(400, 'missing handle'))
   }
   var password = req.body.password
   if (!password) {
     return next(createError(400, 'missing password'))
   }
 
-  var users = DataUtil.readUsers()
-  var user = users[userId]
-  if (user) {
-    return next(createError(409, `user with handle ${userId} already exists`))
-  }
-
-  users[userId] = req.body
   try {
-    DataUtil.writeUsers(users)
-  } catch (exception) {
-    return next(createError(500, 'CANNOT WRITE TO users.json FILE ' + exception))
-  }
+    await AuthUtil.createUser(handle, password)
 
-  setSignedInCookie(res, userId)
-  res.redirect('/')
+    // TODO: secure cookie contents
+    setSignedInCookie(res, handle)
+
+    res.redirect('/')
+  } catch (exception) {
+    return next(exception)
+  }
 })
 
 module.exports = router
