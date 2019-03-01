@@ -1,6 +1,5 @@
 var createError = require('http-errors')
 var express = require('express')
-var DataUtil = require('../utils/DataUtil')
 var AuthUtil = require('../utils/AuthUtil')
 var cookie = require('cookie')
 
@@ -10,7 +9,7 @@ router.get('/sign-in', function(req, res, next) {
   res.render('sign-in')
 })
 
-router.post('/sign-in', function(req, res, next) {
+router.post('/sign-in', async function(req, res, next) {
   var handle = req.body.handle
   if (!handle) {
     return next(createError(400, 'missing handle'))
@@ -20,17 +19,15 @@ router.post('/sign-in', function(req, res, next) {
     return next(createError(400, 'missing password'))
   }
 
-  var users = DataUtil.readUsers()
-  var user = users[handle]
-  if (!user) {
-    return next(createError(401, `no user with handle ${handle}`))
-  }
-  if (user.password !== password) {
-    return next(createError(401, 'incorrect password'))
-  }
+  try {
+    await AuthUtil.validateUser(handle, password)
+    setSignedInCookie(res, handle)
+    res.redirect('/')
+  } catch (exception) {
+    console.error(123, exception)
 
-  setSignedInCookie(res, handle)
-  res.redirect('/')
+    return next(createError(401, exception.message))
+  }
 })
 
 function setSignedInCookie(res, handle) {

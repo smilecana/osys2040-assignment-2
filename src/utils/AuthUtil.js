@@ -24,6 +24,39 @@ async function createUser(handle, password) {
       // 42P01 - table is missing - we'll create it and try again
       await createUserTable()
       return createUser(handle, password)
+    } else if (exception.code === '23505') {
+      throw new Error(`User ${handle} already exists`)
+    } else {
+      // unrecognized, throw error to caller
+      console.error(exception)
+      throw exception
+    }
+  }
+}
+
+async function validateUser(handle, password) {
+  try {
+    // look up user with the passed handle
+    const result = await PostgresUtil.pool.query(
+      'SELECT * FROM app_users WHERE handle = $1::text',
+      [ handle ])
+
+    // determine if we found a user with that handle
+    const foundUser = result.rows[0]
+    if (!foundUser) {
+      throw new Error(`no user with handle ${handle}`)
+    }
+
+    // check that the password matches the one used to create the hash
+    const passwordHash = foundUser.password_hash
+    if (!bcrypt.compareSync(password, passwordHash)) {
+      throw new Error('incorrect password')
+    }
+  } catch (exception) {
+    if (exception.code === '42P01') {
+      // 42P01 - table is missing - we'll create it and try again
+      await createUserTable()
+      return validateUser(handle, password)
     } else {
       // unrecognized, throw error to caller
       console.error(exception)
@@ -34,7 +67,5 @@ async function createUser(handle, password) {
 
 module.exports = {
   createUser: createUser,
+  validateUser: validateUser,
 }
-
-
-    // const result = await PostgresUtil.pool.query('SELECT * FROM Users')
