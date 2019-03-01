@@ -2,9 +2,9 @@ const PostgresUtil = require('./PostgresUtil')
 const bcrypt = require('bcrypt-nodejs')
 
 async function createUserTable() {
-  return await PostgresUtil.pool.query(`CREATE TABLE AppUsers (
-    handle        VARCHAR(100) PRIMARY KEY,
-    passwordHash  VARCHAR(200)
+  return await PostgresUtil.pool.query(`CREATE TABLE app_users (
+    handle         VARCHAR(100) PRIMARY KEY,
+    password_hash  VARCHAR(200)
   )`)
 }
 
@@ -13,7 +13,7 @@ async function createUser(handle, password) {
     const passwordHash = bcrypt.hashSync(password)
 
     const result = await PostgresUtil.pool.query(
-      'INSERT INTO AppUsers VALUES ($1::text, $2::text);',
+      'INSERT INTO app_users VALUES ($1::text, $2::text);',
       [
         handle, passwordHash
       ])
