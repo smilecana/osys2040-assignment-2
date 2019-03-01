@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./src/server.js",
-    "watch": "nodemon --watch src npm start"
+    "watch": "nodemon --watch src npm start",
+    "watch-heroku": "nodemon --watch src heroku local"
   },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
