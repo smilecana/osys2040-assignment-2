@@ -1,4 +1,5 @@
 const PostgresUtil = require('./PostgresUtil')
+const bcrypt = require('bcrypt-nodejs')
 
 async function createUserTable() {
   return await PostgresUtil.pool.query(`CREATE TABLE AppUsers (
@@ -9,21 +10,22 @@ async function createUserTable() {
 
 async function createUser(handle, password) {
   try {
-    // TODO: convert password to passwordHash
+    const passwordHash = bcrypt.hashSync(password)
 
     const result = await PostgresUtil.pool.query(
       'INSERT INTO AppUsers VALUES ($1::text, $2::text);',
       [
-        handle, password
+        handle, passwordHash
       ])
 
     return result
   } catch (exception) {
     if (exception.code === '42P01') {
+      // 42P01 - table is missing - we'll create it and try again
       await createUserTable()
       return createUser(handle, password)
     } else {
-      // unrecognized, don't handle here
+      // unrecognized, throw error to caller
       console.error(exception)
       throw exception
     }
