@@ -1,10 +1,14 @@
-const DataUtil = require('../utils/DataUtil')
+const PostgresUtil = require('../utils/PostgresUtil')
 
-module.exports = function(req, res, next) {
+module.exports = async function(req, res, next) {
   const handle = req.cookies.handle
 
-  const users = DataUtil.readUsers()
-  if (users[handle]) {
+  const result = await PostgresUtil.pool.query(
+    'SELECT * FROM app_users WHERE handle = $1::text',
+    [ handle ])
+
+  const foundUser = result.rows[0]
+  if (foundUser) {
     res.locals.signedInAs = handle
   } else {
     res.locals.signedInAs = undefined
