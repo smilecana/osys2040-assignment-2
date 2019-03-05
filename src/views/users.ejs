@@ -6,12 +6,12 @@
   </head>
   <body>
     <h1>
-      <%= handles.length %>
-      User<%= (!handles.length || handles.length > 1) ? "s" : "" %>
+      <%= users.length %>
+      User<%= (!users.length || users.length > 1) ? "s" : "" %>
     </h1>
     <ul>
 
-      <% handles.forEach(function(handle) { %>
+      <% users.forEach(function(handle) { %>
 
         <li>
           <%= handle %>
