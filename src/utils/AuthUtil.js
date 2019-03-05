@@ -49,6 +49,10 @@ async function validateUser(handle, password) {
 
     // check that the password matches the one used to create the hash
     const passwordHash = foundUser.password_hash
+    if (!passwordHash) {
+      console.log('foundUser:', foundUser)
+      throw new Error('password hash not found - time for a database refresh?')
+    }
     if (!bcrypt.compareSync(password, passwordHash)) {
       throw new Error('incorrect password')
     }

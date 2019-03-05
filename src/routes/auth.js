@@ -24,8 +24,6 @@ router.post('/sign-in', async function(req, res, next) {
     setSignedInCookie(res, handle)
     res.redirect('/')
   } catch (exception) {
-    console.error(123, exception)
-
     return next(createError(401, exception.message))
   }
 })
