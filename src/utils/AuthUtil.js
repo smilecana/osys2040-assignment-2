@@ -72,4 +72,6 @@ async function validateUser(handle, password) {
 module.exports = {
   createUser: createUser,
   validateUser: validateUser,
+  // TODO: read from environment variable
+  JWT_SECRET: 'There once was a person studying at the NSCC',
 }

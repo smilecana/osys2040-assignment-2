@@ -1,7 +1,8 @@
-var createError = require('http-errors')
-var express = require('express')
-var AuthUtil = require('../utils/AuthUtil')
-var cookie = require('cookie')
+const createError = require('http-errors')
+const express = require('express')
+const AuthUtil = require('../utils/AuthUtil')
+const cookie = require('cookie')
+const jwt = require('jsonwebtoken')
 
 var router = express.Router()
 
@@ -29,7 +30,9 @@ router.post('/sign-in', async function(req, res, next) {
 })
 
 function setSignedInCookie(res, handle) {
-  res.setHeader('Set-Cookie', cookie.serialize('handle', handle, {
+  const token = jwt.sign({ handle: handle }, AuthUtil.JWT_SECRET)
+
+  res.setHeader('Set-Cookie', cookie.serialize('token', token, {
     httpOnly: true,
     maxAge: 60 * 60 * 24 * 7, // expire in 1 week
     sameSite: 'strict',
@@ -38,7 +41,7 @@ function setSignedInCookie(res, handle) {
 }
 
 router.get('/sign-out', function(req, res, next) {
-  res.setHeader('Set-Cookie', cookie.serialize('handle', ' ', {
+  res.setHeader('Set-Cookie', cookie.serialize('token', ' ', {
     httpOnly: true,
     maxAge: 0, // expire immediately
     path: '/',
@@ -64,7 +67,6 @@ router.post('/sign-up', async function(req, res, next) {
   try {
     await AuthUtil.createUser(handle, password)
 
-    // TODO: secure cookie contents
     setSignedInCookie(res, handle)
 
     res.redirect('/')
