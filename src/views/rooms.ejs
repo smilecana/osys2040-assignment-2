@@ -7,12 +7,11 @@
   <body>
     <h1><%= roomIds.length %> Chat Room<%= (!roomIds.length || roomIds.length > 1) ? "s" : "" %></h1>
     <ul>
-      <% roomIds.forEach(function(roomId){ %>
+      <% rooms.forEach(function(room){ %>
         <li>
-          <a href="/chat/<%= roomId %>">
-            <%= rooms[roomId].roomName %>
+          <a href="/chat/<%= room %>">
+            <%= room.name %>
           </a>
-          <%= new Date(rooms[roomId].updatedAt).toLocaleString() %>
         </li>
       <% }) %>
     </ul>
@@ -24,6 +23,7 @@
         <div>
           <label for="roomName">Room Name:</label>
           <input type="text" id="roomName" name="roomName" required>
+          <input type="text" id="roomDescription" name="roomDescription">
         </div>
         <button type="submit">Create</button>
       </form>

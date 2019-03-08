@@ -5,22 +5,7 @@
     <link rel="stylesheet" href="/stylesheets/style.css" />
   </head>
   <body>
-    <h1><%= room.roomName %></h1>
-    <p>Chatting since <%= new Date(room.createdAt).toLocaleString() %>.</p>
-
-    <% if (room.messages.length === 0) { %>
-      <p>No Messages</p>
-    <% } %>
-    <% room.messages.forEach(function(message) { %>
-      <p>
-        <b><%= message.createdBy %></b>
-        <%= new Date(message.createdAt).toLocaleTimeString() %>
-        :
-        <span>
-          <%= message.message %>
-        </span>
-      </p>
-    <% }) %>
+    <h1><%= room.name %></h1>
 
     <% if (signedInAs) { %>
       <div>Hi <%= signedInAs %>, leave a message:</div>
