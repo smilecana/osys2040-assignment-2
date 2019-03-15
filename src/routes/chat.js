@@ -6,7 +6,23 @@ const router = express.Router()
 
 router.get('/chat', async function getMessages(req, res, next) {
   const messages = await Chat.getMessages()
-  res.render('messages', { messages })
+
+  // TODO: create like model
+  // TODO: get like count from like model
+  const likeCount = 0
+  // TODO: get whether signed in user likes this from model
+  const iLikeThis = true
+
+  res.render('messages', { messages, likeCount, iLikeThis })
+})
+
+router.post('/chat/:messageId/like', async function userLikes(req, res, next) {
+  console.log('req.body.like:', req.body.like)
+
+  // TODO: if (req.body.like) add like to model
+  // TODO: else remove like from model
+
+  res.redirect('/chat')
 })
 
 router.post('/chat/create-message', async function createMessage(req, res, next) {
